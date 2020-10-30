@@ -7,7 +7,9 @@ class Opponent:
         self.XP = 1000
         self.Health = 1000
         self.Coins = 100
-        self.Moves = [Move.Move('Sucker Punch', 5, -1, 2), Move.Move('', 6, -1, 1), Move.Move('', 7, -1, 0)]
+        self.MaxHealth = 1000
+        self.Moves = [Move.Move('Taunt', 15, -1, 10), Move.Move('Sucker Punch', 20, -1, 5),
+                      Move.Move('Drop Kick', 25, -1, 0)]
         self.Items = []
 
     def __repr__(self):
@@ -19,19 +21,22 @@ class Opponent:
     def level(self):
         return self.XP//1000
 
+    def update_health(self):
+        self.MaxHealth = (self.XP//1000)*1000
+
     def reset_moves(self):
         for m in self.Moves:
             m.reset_move()
 
     def full_summary(self):
-        _items = 'You currently have not items'
+        _items = 'You currently have no items'
         if len(self.Items) != 0:
             _items = f'Your available items are {self.Items}'
         return f'''Full Summary
 ------------------------------
 {self.Name}
 {self.XP} XP
-{self.Health} health
+{self.Health} health / {self.MaxHealth}
 {self.Coins} coins
 Your available moves are {self.Moves}
 {_items}'''
