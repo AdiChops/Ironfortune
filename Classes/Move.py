@@ -1,5 +1,5 @@
 class Move:
-    def __init__(self, _name, _dp, _mt, _xpb):
+    def __init__(self, _name, _dp, _mt, _xpb=0):
         self.Name = _name
         self.DamagePoints = _dp
         self.MaxTimes = _mt

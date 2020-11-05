@@ -41,4 +41,24 @@ class Opponent:
 Your available moves are {self.Moves}
 {_items}'''
 
+    def short_summary(self):
+        return f'''
+{self.Name}
+{self.XP} XP
+{self.Coins} coins
+'''
+
+    def available_moves(self):
+        _return_string = ''
+        _counter = 1
+        for move in self.Moves:
+            _return_string += f'{_counter}: {move.Name} - {move.DamagePoints} damage points - {move.XPBoost} XP Boost'
+            if move.RemainingTimes == 0:
+                _return_string += ' (cannot use this move, used max amount of times)'
+            elif move.RemainingTimes != -1:
+                _return_string += f' - can be used {move.RemainingTimes} times'
+            else:
+                _return_string += '(can be used unlimited times)'
+            _return_string += '\n'
+        return _return_string
 
