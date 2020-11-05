@@ -2,6 +2,7 @@ from Classes import Move, Opponent, Item
 import time
 import random
 import opponent_generation as og
+import quote_generation as qg
 
 print('Welcome to Ironfortune!')
 name = input('What should we call you? ')
@@ -12,6 +13,7 @@ def play():
     next_opponent = og.generate_opponent(main_user.level(), len(main_user.Moves)-3)
     seconds = random.choice(range(2, 7))
     time.sleep(seconds)
+
 
 
 def testing():
