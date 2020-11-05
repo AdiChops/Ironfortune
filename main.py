@@ -17,11 +17,23 @@ def play():
     if next_gen == 0:
         next_opponent = og.generate_opponent(main_user.level(), len(main_user.Moves))
         print(qg.generate_quote('A', next_opponent.Name))
-        battle_start(next_opponent)
+        battle(next_opponent)
 
 
-def battle_start(opp):
-    pass
+def battle(opp):
+    while opp.Health > 0 and main_user.Health > 0:
+        try:
+            print(f'Your current health is {main_user.Health}')
+            print(f'{opp.Name}\'s current health is {opp.Health}')
+            print(f'''Your moves are
+    {main_user.available_moves()}''')
+            next_move_index = int(input('Type in the number of your next move > ')) - 1
+            # since the indexing starts at 0, but the move numbers start at 1, the input needs to be subtracted by 1
+            next_move = main_user.Moves[next_move_index]
+            print(f'You used {next_move.Name}')
+        except IndexError:
+            pass
+            # if the user picks a number out of range
 
 
 def testing():
