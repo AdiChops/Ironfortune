@@ -1,4 +1,5 @@
 from Classes import Move
+import random
 
 
 class Opponent:
@@ -67,3 +68,16 @@ Your available moves are {self.Moves}
         if self.Moves[move_index].RemainingTimes != -1:
             self.Moves[move_index].RemainingTimes -= 1
         self.XP += self.Moves[move_index].XPBoost
+
+    def get_hit(self, move):
+        # There is a 5% chance of missing the move
+        # generating a random number between 0 and 100 (100 exclusive)
+        # If the number >= 5, then hit, otherwise move missed
+        prob = random.choice(range(0, 100))
+        result = prob >= 5
+        if result:
+            if self.Health >= move.DamagePoints:
+                self.Health -= move.DamagePoints
+            else:
+                self.Health = 0
+        return result

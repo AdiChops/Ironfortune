@@ -40,3 +40,7 @@ def generate_quote(reason, name='Opponent'):
 
     return random.choice(quotes)
 
+
+def generate_art():
+    art_pieces = 'the game is going'
+    return random.choice(art_pieces)

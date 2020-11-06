@@ -1,11 +1,11 @@
 import random
 from Classes import Move, Opponent
 
-names = ['Bob', 'John', 'Joe', 'Jill', 'Michael', 'Dave', 'Scott', 'Jim', 'Alex', 'Phil', 'Lucas', 'Luke', 'Rick',
+names = ['Adi', 'Zara', 'Erica', 'Dawson', 'Preethi', 'Elias', 'Justina', 'Anish', 'Max', 'Veronica', 'Judy', 'Rachel',
+         'Evan', 'Sarah', 'Forest', 'Amelie', 'Rick', 'Kelsey', 'Jarvis', 'Michael',
          'Bill', 'Jack', 'Sally', 'Donald', 'Jeff', 'Ahmed', 'Dwight', 'Toby', 'Ed', 'Rob', 'Victor', 'Justin',
-         'Emelie', 'Amy', 'Pamela', 'Bert', 'Eric', 'Erica', 'David', 'Haley', 'Christina', 'Chris', 'Justine', 'Ned',
-         'Bart', 'Lisa', 'Claire', 'Sophia', 'Gloria', 'Patrick', 'Kevin', 'Kaley', 'Carl', 'Victoria', 'William',
-         'Kelsey', 'Jarvis']
+         'Amy', 'Pamela', 'Bert', 'Eric', 'Bob', 'David', 'Haley', 'Christina', 'Chris', 'George', 'Ned',
+         'Bart', 'Lisa', 'Claire', 'Sophia', 'Gloria', 'Patrick', 'Kevin', 'Kaley', 'Carl', 'Victoria', 'William']
 
 name_adjectives = ['Horrible', 'Pickle', 'Scary', 'Despicable', 'Untouchable', 'Creepy', 'Feared', 'Amazing',
                    'Incredible', 'Legendary', 'The Great', 'Horrible', 'Terrible', 'Wicked', 'Crazy']
