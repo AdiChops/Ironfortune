@@ -14,3 +14,6 @@ class Move:
 
     def reset_move(self):
         self.RemainingTimes = self.MaxTimes
+
+    def can_be_used(self):
+        return self.RemainingTimes != 0

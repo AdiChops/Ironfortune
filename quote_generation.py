@@ -21,7 +21,7 @@ def generate_quote(reason, name='Opponent'):
                          "You put up a good fight. Unfortunately, it was not good enough."],
 
                    'A': [f'Whoa! it\'s {name}!', f'A wild {name} has appeared!',
-                         f'{name} is threatening you!', f'{name} has blocked you way!',
+                         f'{name} is threatening you!', f'{name} has blocked your way!',
                          f'{name} wants to battle you!', f'It\'s the ultimate showdown, you vs. {name}'],
 
                    'S': ['Our battle will be legendary!',

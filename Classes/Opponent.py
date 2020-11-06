@@ -58,7 +58,12 @@ Your available moves are {self.Moves}
             elif move.RemainingTimes != -1:
                 _return_string += f' - can be used {move.RemainingTimes} times'
             else:
-                _return_string += '(can be used unlimited times)'
+                _return_string += ' (can be used unlimited times)'
             _return_string += '\n'
+            _counter += 1
         return _return_string
 
+    def use_move(self, move_index):
+        if self.Moves[move_index].RemainingTimes != -1:
+            self.Moves[move_index].RemainingTimes -= 1
+        self.XP += self.Moves[move_index].XPBoost
