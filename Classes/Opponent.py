@@ -7,7 +7,7 @@ class Opponent:
         self.Name = _name
         self.XP = 1000
         self.Health = 1000
-        self.Coins = 100
+        self.Coins = 400
         self.MaxHealth = 1000
         self.Moves = [Move.Move('Taunt', 15, -1, 10), Move.Move('Sucker Punch', 20, -1, 5),
                       Move.Move('Drop Kick', 25, -1, 0)]
@@ -53,7 +53,7 @@ Your available moves are {self.Moves}
         _return_string = ''
         _counter = 1
         for move in self.Moves:
-            _return_string += f'{_counter}: {move.Name} - {move.DamagePoints} damage points - {move.XPBoost} XP Boost'
+            _return_string += f"{_counter}: {move.move_details(False)}"   # passing False for less details
             if move.RemainingTimes == 0:
                 _return_string += ' (cannot use this move, used max amount of times)'
             elif move.RemainingTimes != -1:
@@ -81,3 +81,28 @@ Your available moves are {self.Moves}
             else:
                 self.Health = 0
         return result
+
+    def win(self):
+        self.XP += self.Health
+        self.Coins += self.Health // 10
+
+    def defeat(self, opp):
+        self.XP -= opp.Health
+        if self.XP < 0:
+            self.XP = 0
+
+    def buy_move(self, move):
+        if self.Coins >= move.BuyingPrice:
+            self.Coins -= move.BuyingPrice
+            self.Moves.append(move)
+            return True
+        else:
+            return False
+
+    def sell_move(self, move):
+        if move.MaxTimes != -1:
+            self.Coins += move.SellingPrice
+            self.Moves.remove(move)
+            return True
+        else:
+            return False

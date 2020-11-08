@@ -1,8 +1,7 @@
 from Classes import Opponent
 import time
 import random
-import msvcrt
-import opponent_generation as og
+import inventory_management as og   # og for opponent generation
 import quote_generation as qg
 
 BLUE = '\u001b[34m'   # To make text blue
@@ -44,7 +43,7 @@ def progress_bar(user):
         elif i <= percentage//5:
             bar += '=='
         else:
-            bar += '  '
+            bar += '..'
     bar += f' ]{RESET}'
     return bar
 
@@ -53,14 +52,12 @@ def play():
     seconds = random.choice(range(2, 7))
     print(qg.generate_art())
     time.sleep(seconds)
-    next_gen = 0   # this code will be replaced with random int generation with options 0 as opponent and 1 as item
-    if next_gen == 0:
-        next_opponent = og.generate_opponent(MAIN_USER.level(), len(MAIN_USER.Moves)-3)
-        # reducing by 3, since every user has 3 moves by default
-        print(f"{YELLOW}{qg.generate_quote('A', next_opponent.Name)}{RESET}\n")
-        print(f"{YELLOW}{BOLD}{next_opponent.Name}{RESET}: {qg.generate_quote('S')}\n")
-        time.sleep(2)
-        battle(next_opponent)
+    next_opponent = og.generate_opponent(MAIN_USER.level(), len(MAIN_USER.Moves)-3)
+    # reducing by 3, since every user has 3 moves by default
+    print(f"{YELLOW}{qg.generate_quote('A', next_opponent.Name)}{RESET}\n")
+    print(f"{YELLOW}{BOLD}{next_opponent.Name}{RESET}: {qg.generate_quote('S')}\n")
+    time.sleep(2)
+    battle(next_opponent)
 
 
 def battle(opp):
@@ -92,10 +89,7 @@ Your moves are:
         except (IndexError, ValueError):
             print('Please enter a valid move number')
             # if the user picks a number out of range
-    if opp.Health == 0:
-        print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('D')}")
-    else:
-        print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('W')}")
+        check_winner(opp)
 
 
 def completing_move(i, move, opp):
@@ -104,7 +98,7 @@ def completing_move(i, move, opp):
         result = opp.get_hit(move)
         print(f'\nYou used {move.Name}')
         msg = 'now'
-        if result is False:
+        if not result:
             print('Oh no, you missed!')
             msg = 'still'
     else:
@@ -118,7 +112,32 @@ def give_summary():
 
 
 def opponent_move(opp):
-
+    # 10% chance that not the highest move gets chosen
+    move_prob = random.choice(range(0, 100))
+    if move_prob < 10:
+        can_be_used = False
+        next_move_index = -1
+        next_move = opp.Moves[0]   # initializing variable
+        while not can_be_used:
+            next_move_index = random.choice(range(0, len(opp.Moves)))
+            next_move = opp.Moves[next_move_index]
+            can_be_used = next_move.can_be_used()
+        opp.use_move(next_move_index)
+        MAIN_USER.get_hit(next_move)
+    else:
+        # since moves are always sorted, take the last move for the one doing highest damage
+        can_be_used = False
+        i = len(opp.Moves)
+        while not can_be_used:
+            i -= 1
+            next_move = opp.Moves[i]
+            can_be_used = next_move.can_be_used()
+        opp.use_move(i)
+        result = MAIN_USER.get_hit(next_move)
+        print(f'{opp.Name} used {next_move.Name}')
+        if not result:
+            print(f'Whoa! {opp.Name} missed!')
+        print('\n')
     return opp
 
 
@@ -129,9 +148,33 @@ def quit_game():
         quit()
 
 
+def buy():
+    inventory = og.inventory()
+    if len(inventory) == 0:
+        og.generate_inventory()
+        inventory = og.inventory()
+    print('''Inventory
+-------------
+''')
+    for move in inventory:
+        print(f'{move.move_details()}\n')
+
+
+def check_winner(opp):
+    if opp.Health == 0:
+        print(f"You won this battle!")
+        MAIN_USER.win()
+        print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('D')}")
+    else:
+        print(f"{opp.Name} won this battle!")
+        MAIN_USER.defeat(opp)
+        print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('W')}")
+
+
 while True:
-    basic_commands = {'S': give_summary, 'Q': quit_game, 'P': play}
-    step = input(f'''
+    try:
+        basic_commands = {'S': give_summary, 'Q': quit_game, 'P': play, 'B': buy}
+        step = input(f'''
 What would you like to do next?
 {BOLD}S{RESET} - To view your full summary
 {BOLD}P{RESET} - To play/continue the game
@@ -139,4 +182,6 @@ What would you like to do next?
 {BOLD}Q{RESET} - Quit game
 
 ''')
-    basic_commands[step.upper()]()
+        basic_commands[step.upper()]()
+    except KeyError:
+        print(f'{BOLD}{RED}Please enter a valid command.{RESET}')
