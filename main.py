@@ -28,6 +28,7 @@ MAIN_USER = Opponent.Opponent(name)
 initial_level = MAIN_USER.level()
 
 
+# this prints the user's health bar/ health progress bar
 def progress_bar(user):
     percentage = (user.Health/user.MaxHealth)*100
     if percentage >= 60:
@@ -61,6 +62,7 @@ def play():
     battle(next_opponent)
 
 
+# this is the function that handles the battle logic between the user and the AI opponent
 def battle(opp):
     while opp.Health > 0 and MAIN_USER.Health > 0:
         try:
@@ -73,6 +75,8 @@ Your moves are:
 {MAIN_USER.available_moves()}''')
             next_move_index = int(input('Type in the number of your next move > ')) - 1
             # since the indexing starts at 0, but the move numbers start at 1, the input needs to be subtracted by 1
+            if next_move_index < 0:
+                raise ValueError
             next_move = MAIN_USER.Moves[next_move_index]
             opp, result = completing_move(next_move_index, next_move, opp)   # resetting opp once user move is completed
             time.sleep(1)
@@ -88,11 +92,12 @@ Your moves are:
                 opponent_move(opp)
 
         except (IndexError, ValueError):
-            print('Please enter a valid move number')
+            print(f'{BOLD}{RED}Please enter a valid move number{RESET}')
             # if the user picks a number out of range
     check_winner(opp)
 
 
+# this function is used to complete the user's move
 def completing_move(i, move, opp):
     if move.can_be_used():
         MAIN_USER.use_move(i)
@@ -112,6 +117,7 @@ def give_summary():
     print(MAIN_USER.full_summary())
 
 
+# this function picks the move that the AI will use against the user
 def opponent_move(opp):
     # 10% chance that not the highest move gets chosen
     move_prob = random.choice(range(0, 100))
@@ -150,10 +156,11 @@ def quit_game():
         quit()
 
 
+# buying a move from the inventory
 def buy():
     try:
         inventory = og.inventory()
-        if len(inventory) == 0:
+        if len(inventory) == 0:   # if the length is 0, either the file was not found or the inventory is empty
             og.generate_inventory()
             inventory = og.inventory()
         print(f'''{BOLD}Inventory (sorted by buying price)
@@ -211,6 +218,7 @@ def sell():
         sell()
 
 
+# checking who the winner of the battle is
 def check_winner(opp):
     if opp.Health == 0:
         print(f"You won this battle!")
@@ -225,12 +233,14 @@ def check_winner(opp):
     health_regeneration()
 
 
+# checking if the main user levelled up
 def check_levelup():
     global initial_level
     if initial_level < MAIN_USER.level():
         print(f'You levelled up to level {MAIN_USER.level()}!')
         coins = MAIN_USER.levelup()
         print(f'You got {coins} coins!')
+    initial_level = MAIN_USER.level()
 
 
 def health_regeneration():

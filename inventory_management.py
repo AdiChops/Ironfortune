@@ -37,6 +37,7 @@ def generate_move(lvl, move_name=None):
     return Move.Move(move_name, damage, max_times, xp_boost, bp, sp)
 
 
+# this function generates a balanced opponent for the user
 def generate_opponent(lvl, num_moves):
     opponent = Opponent.Opponent(generate_opponent_name())
     for i in range(0, num_moves):
@@ -48,10 +49,12 @@ def generate_opponent(lvl, num_moves):
     return opponent
 
 
+# this function returns the current inventory as defined in the move_inventory.txt file
 def inventory():
     try:
         f = open('move_inventory.txt', 'r+')
         content = f.readlines()
+        f.close()
         moves_list = []
         for line in content:
             move_item = line.strip().split('~')

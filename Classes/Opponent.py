@@ -36,6 +36,7 @@ class Opponent:
         return f'''Full Summary
 ------------------------------
 {self.Name}
+You are level {self.level()}
 {self.XP} XP
 {self.Health} health / {self.MaxHealth}
 {self.Coins} coins
@@ -49,6 +50,7 @@ Your available moves are {self.Moves}
 {self.Coins} coins
 '''
 
+    # this function would print the user's moves and how many times they can use them
     def available_moves(self):
         _return_string = ''
         _counter = 1
@@ -69,6 +71,7 @@ Your available moves are {self.Moves}
             self.Moves[move_index].RemainingTimes -= 1
         self.XP += self.Moves[move_index].XPBoost
 
+    # this move is the one that handles the impact from the opponent's move
     def get_hit(self, move):
         # There is a 5% chance of missing the move
         # generating a random number between 0 and 100 (100 exclusive)
@@ -105,6 +108,8 @@ Your available moves are {self.Moves}
         self.Moves.remove(move)
         return True
 
+    # determines the moves that are available to sell
+    # The moves that are available are the ones that are not 0 buying price
     def available_to_sell(self):
         moves_to_sell = []
         for move in self.Moves:
@@ -112,6 +117,7 @@ Your available moves are {self.Moves}
                 moves_to_sell.append(move)
         return moves_to_sell
 
+    # this function handles the levelling up of the user
     def levelup(self):
         coins = 500*self.level()
         self.Coins += coins

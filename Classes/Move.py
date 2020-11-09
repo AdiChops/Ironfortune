@@ -26,13 +26,14 @@ class Move:
     def reset_move(self):
         self.RemainingTimes = self.MaxTimes
 
+    # determines if the move can still be used
     def can_be_used(self):
         return self.RemainingTimes != 0
 
     def move_details(self, _full=1):   # by default, _full is 1, meaning full details to be given
         return_str = f'{self.Name} - {self.DamagePoints} damage points - {self.XPBoost} XP Boost'
-        if _full == 1:
+        if _full == 1:       # 1 is for buying
             return_str = f'Buy it for {self.BuyingPrice} coins: {return_str} - max {self.MaxTimes} uses (sell it for {self.SellingPrice} coins)'
-        elif _full == 2:
+        elif _full == 2:     # 2 is for selling
             return_str = f'Sell it for {self.SellingPrice} coins: {return_str} - max {self.MaxTimes} uses (bought for {self.BuyingPrice} coins)'
         return return_str
