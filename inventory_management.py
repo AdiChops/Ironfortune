@@ -1,5 +1,6 @@
 import random
 from Classes import Move, Opponent
+import sorting_helper as sh
 
 names = ['Adi', 'Zara', 'Erica', 'Dawson', 'Preethi', 'Elias', 'Justina', 'Anish', 'Max', 'Veronica', 'Judy', 'Rachel',
          'Evan', 'Sarah', 'Forest', 'Amelie', 'Rick', 'Kelsey', 'Jarvis', 'Michael', 'Dave',
@@ -40,6 +41,10 @@ def generate_opponent(lvl, num_moves):
     opponent = Opponent.Opponent(generate_opponent_name())
     for i in range(0, num_moves):
         opponent.Moves.append(generate_move(lvl))
+    opponent.Moves = sh.merge_sort_moves(opponent.Moves, False)
+    opponent.XP = lvl*1000
+    opponent.MaxHealth = lvl*1000
+    opponent.Health = lvl*1000
     return opponent
 
 
@@ -55,7 +60,7 @@ def inventory():
             move = Move.Move(move_item[0], int(move_item[1]), int(move_item[2]), int(move_item[3]), int(move_item[4]),
                              int(move_item[5]))
             moves_list.append(move)
-        moves_list = merge_sort_moves(moves_list)
+        moves_list = sh.merge_sort_moves(moves_list)
     except FileNotFoundError:
         moves_list = []
     return moves_list
@@ -69,32 +74,3 @@ def generate_inventory():
             move_name = f'{a} {n}'
             f.write(f'{str(generate_move(10, move_name))}\n')     # generating a move as if lvl 10 is the max
     f.close()
-
-
-def merge_sort_moves(moves):
-    if len(moves) <= 1:
-        return moves
-    else:
-        left = merge_sort_moves(moves[0:len(moves) // 2])
-        right = merge_sort_moves(moves[len(moves) // 2:len(moves)])
-        return merge(left, right)
-
-
-def merge(l, r):
-    return_list = []
-    i = 0
-    j = 0
-    while i < len(l) and j < len(r):
-        if l[i] < r[j]:
-            return_list.append(l[i])
-            i += 1
-        else:
-            return_list.append(r[j])
-            j += 1
-    while i < len(l):
-        return_list.append(l[i])
-        i += 1
-    while j < len(r):
-        return_list.append(r[j])
-        j += 1
-    return return_list

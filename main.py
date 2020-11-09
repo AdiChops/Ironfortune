@@ -25,6 +25,7 @@ welcome = f'''{BLUE}{BOLD}
 print(welcome)
 name = input('What should we call you? ')
 MAIN_USER = Opponent.Opponent(name)
+initial_level = MAIN_USER.level()
 
 
 def progress_bar(user):
@@ -89,7 +90,7 @@ Your moves are:
         except (IndexError, ValueError):
             print('Please enter a valid move number')
             # if the user picks a number out of range
-        check_winner(opp)
+    check_winner(opp)
 
 
 def completing_move(i, move, opp):
@@ -123,6 +124,7 @@ def opponent_move(opp):
             next_move = opp.Moves[next_move_index]
             can_be_used = next_move.can_be_used()
         opp.use_move(next_move_index)
+        print(f'{opp.Name} used {next_move.Name}')
         MAIN_USER.get_hit(next_move)
     else:
         # since moves are always sorted, take the last move for the one doing highest damage
@@ -149,15 +151,60 @@ def quit_game():
 
 
 def buy():
-    inventory = og.inventory()
-    if len(inventory) == 0:
-        og.generate_inventory()
+    try:
         inventory = og.inventory()
-    print('''Inventory
--------------
+        if len(inventory) == 0:
+            og.generate_inventory()
+            inventory = og.inventory()
+        print(f'''{BOLD}Inventory (sorted by buying price)
+--------------------------------------{RESET}
 ''')
-    for move in inventory:
-        print(f'{move.move_details()}\n')
+        counter = 1
+        for move in inventory:
+            print(f'# {counter} | {move.move_details()}\n')
+            counter += 1
+        print(f'You have {MAIN_USER.Coins} coins.')
+        move_index = input('Enter the number of the move you would like to buy or \'C\' to cancel > ').upper()
+        if move_index == 'C':
+            pass
+        else:
+            move_index = int(move_index)
+            if move_index < 0:
+                raise ValueError
+            move = inventory[move_index - 1]
+            bought = MAIN_USER.buy_move(move)
+            if bought:
+                print(f'You bought {move.Name}')
+            else:
+                print(f'You can\'t buy {move.Name}')
+    except (IndexError, ValueError):
+        print(f'{BOLD}{RED}Please enter a valid value.{RESET}')
+        buy()
+
+
+def sell():
+    try:
+        print(f'''{BOLD}Available Moves to Sell
+--------------------------------------{RESET}''')
+        moves = MAIN_USER.available_to_sell()
+        if len(moves) == 0:
+            print('No moves available to sell')
+            pass
+        else:
+            counter = 1
+            for move in moves:
+                print(f'# {counter} | {move.move_details(2)}\n')
+                counter += 1
+            move_index = int(input('Enter the number of the move you would like to sell > '))
+            if move_index < 0:
+                raise ValueError
+            move = moves[move_index - 1]
+            sold = MAIN_USER.sell_move(move)
+            if sold:
+                print(f'You sold {move.Name}')
+    except (IndexError, ValueError):
+        print(f'{BOLD}{RED}Please enter a valid number.{RESET}')
+        sell()
 
 
 def check_winner(opp):
@@ -165,20 +212,38 @@ def check_winner(opp):
         print(f"You won this battle!")
         MAIN_USER.win()
         print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('D')}")
+        check_levelup()
     else:
         print(f"{opp.Name} won this battle!")
         MAIN_USER.defeat(opp)
         print(f"{YELLOW}{BOLD}{opp.Name}{RESET}: {qg.generate_quote('W')}")
+    MAIN_USER.reset_moves()
+    health_regeneration()
+
+
+def check_levelup():
+    global initial_level
+    if initial_level < MAIN_USER.level():
+        print(f'You levelled up to level {MAIN_USER.level()}!')
+        coins = MAIN_USER.levelup()
+        print(f'You got {coins} coins!')
+
+
+def health_regeneration():
+    print('Your health will regenerate in 5 seconds.')
+    time.sleep(5)
+    MAIN_USER.regenerate()
 
 
 while True:
     try:
-        basic_commands = {'S': give_summary, 'Q': quit_game, 'P': play, 'B': buy}
+        basic_commands = {'F': give_summary, 'Q': quit_game, 'P': play, 'B': buy, 'S': sell}
         step = input(f'''
 What would you like to do next?
-{BOLD}S{RESET} - To view your full summary
+{BOLD}F{RESET} - To view your full summary
 {BOLD}P{RESET} - To play/continue the game
-{BOLD}B{RESET} - To buy items
+{BOLD}B{RESET} - To buy moves
+{BOLD}S{RESET} - To sell moves
 {BOLD}Q{RESET} - Quit game
 
 ''')

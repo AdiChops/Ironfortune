@@ -29,8 +29,10 @@ class Move:
     def can_be_used(self):
         return self.RemainingTimes != 0
 
-    def move_details(self, _full=True):   # by default, _full is True, meaning full details to be given
+    def move_details(self, _full=1):   # by default, _full is 1, meaning full details to be given
         return_str = f'{self.Name} - {self.DamagePoints} damage points - {self.XPBoost} XP Boost'
-        if _full:
-            return_str += f' - max {self.MaxTimes} uses (buy it for {self.BuyingPrice} coins, sell it for {self.SellingPrice} coins)'
+        if _full == 1:
+            return_str = f'Buy it for {self.BuyingPrice} coins: {return_str} - max {self.MaxTimes} uses (sell it for {self.SellingPrice} coins)'
+        elif _full == 2:
+            return_str = f'Sell it for {self.SellingPrice} coins: {return_str} - max {self.MaxTimes} uses (bought for {self.BuyingPrice} coins)'
         return return_str

@@ -42,5 +42,6 @@ def generate_quote(reason, name='Opponent'):
 
 
 def generate_art():
-    art_pieces = 'the game is going'
+    art_pieces = ['It\'s a beautiful day!', 'What a great day to be outside!', 'It\'s a little chilly today',
+                  'Ah! the fresh air outside', 'What a great breeze!']
     return random.choice(art_pieces)

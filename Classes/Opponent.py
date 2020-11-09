@@ -1,5 +1,6 @@
 from Classes import Move
 import random
+import sorting_helper as sh
 
 
 class Opponent:
@@ -7,14 +8,13 @@ class Opponent:
         self.Name = _name
         self.XP = 1000
         self.Health = 1000
-        self.Coins = 400
+        self.Coins = 700
         self.MaxHealth = 1000
         self.Moves = [Move.Move('Taunt', 15, -1, 10), Move.Move('Sucker Punch', 20, -1, 5),
                       Move.Move('Drop Kick', 25, -1, 0)]
-        self.Items = []
 
     def __repr__(self):
-        return f'{self.Name}\n{self.XP}\n{self.Health}\n{self.Coins}\n{self.Moves}\n{self.Items}'
+        return f'{self.Name}\n{self.XP}\n{self.Health}\n{self.Coins}\n{self.Moves}'
 
     def __str__(self):
         return f'{self.Name}\n{self.XP} XP\n{self.Health} Health'
@@ -29,10 +29,10 @@ class Opponent:
         for m in self.Moves:
             m.reset_move()
 
+    def regenerate(self):
+        self.Health = self.MaxHealth
+
     def full_summary(self):
-        _items = 'You currently have no items'
-        if len(self.Items) != 0:
-            _items = f'Your available items are {self.Items}'
         return f'''Full Summary
 ------------------------------
 {self.Name}
@@ -40,7 +40,7 @@ class Opponent:
 {self.Health} health / {self.MaxHealth}
 {self.Coins} coins
 Your available moves are {self.Moves}
-{_items}'''
+'''
 
     def short_summary(self):
         return f'''
@@ -53,7 +53,7 @@ Your available moves are {self.Moves}
         _return_string = ''
         _counter = 1
         for move in self.Moves:
-            _return_string += f"{_counter}: {move.move_details(False)}"   # passing False for less details
+            _return_string += f"{_counter}: {move.move_details(0)}"   # passing 0 for less details
             if move.RemainingTimes == 0:
                 _return_string += ' (cannot use this move, used max amount of times)'
             elif move.RemainingTimes != -1:
@@ -84,10 +84,10 @@ Your available moves are {self.Moves}
 
     def win(self):
         self.XP += self.Health
-        self.Coins += self.Health // 10
+        self.Coins += (self.Health // 10)
 
     def defeat(self, opp):
-        self.XP -= opp.Health
+        self.XP -= opp.Health*self.level()
         if self.XP < 0:
             self.XP = 0
 
@@ -95,14 +95,25 @@ Your available moves are {self.Moves}
         if self.Coins >= move.BuyingPrice:
             self.Coins -= move.BuyingPrice
             self.Moves.append(move)
+            self.Moves = sh.merge_sort_moves(self.Moves, False)
             return True
         else:
             return False
 
     def sell_move(self, move):
-        if move.MaxTimes != -1:
-            self.Coins += move.SellingPrice
-            self.Moves.remove(move)
-            return True
-        else:
-            return False
+        self.Coins += move.SellingPrice
+        self.Moves.remove(move)
+        return True
+
+    def available_to_sell(self):
+        moves_to_sell = []
+        for move in self.Moves:
+            if move.BuyingPrice != 0:
+                moves_to_sell.append(move)
+        return moves_to_sell
+
+    def levelup(self):
+        coins = 500*self.level()
+        self.Coins += coins
+        self.MaxHealth = self.level()*1000
+        return coins
