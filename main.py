@@ -195,15 +195,19 @@ def sell():
             for move in moves:
                 print(f'# {counter} | {move.move_details(2)}\n')
                 counter += 1
-            move_index = int(input('Enter the number of the move you would like to sell > '))
-            if move_index < 0:
-                raise ValueError
-            move = moves[move_index - 1]
-            sold = MAIN_USER.sell_move(move)
-            if sold:
-                print(f'You sold {move.Name}')
+            move_index = input('Enter the number of the move you would like to sell or enter \'C\' to cancel > ').upper()
+            if move_index == 'C':
+                pass
+            else:
+                move_index = int(move_index)
+                if move_index < 0:
+                    raise ValueError
+                move = moves[move_index - 1]
+                sold = MAIN_USER.sell_move(move)
+                if sold:
+                    print(f'You sold {move.Name}')
     except (IndexError, ValueError):
-        print(f'{BOLD}{RED}Please enter a valid number.{RESET}')
+        print(f'{BOLD}{RED}Please enter a valid value.{RESET}')
         sell()
 
 
