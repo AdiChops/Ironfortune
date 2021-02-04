@@ -14,8 +14,7 @@ The user would have a certain amount of coins which they can use to buy more ite
 ## User Health
 If a user reaches 0 health, they will lose a certain amount of XP, depending on the level they are at. After each match, the user’s health regenerates to the full amount.
 ## Other Things
-Since the game is text-based, there will be certain commands to use a move. If I have the time, I may include a guide to fully explain the move/item in more detail, but when buying items/moves, there will be a brief description about the it.
-While discussing my project with other classmates, one classmate (Amelie) had the idea of including terminal graphics, which I also liked and may include in my project.
+Since the game is text-based, there will be certain commands to use a move. When buying items/moves, there will be a brief description about the it.
 
 ## Potential Extensions
 There are many potential extensions to this project, for example:
